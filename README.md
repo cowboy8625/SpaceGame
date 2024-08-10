@@ -1,4 +1,5 @@
 getting started on linux
+
 ```bash
 sudo apt update &&
 sudo apt install -y
@@ -44,4 +45,8 @@ then run
 pyenv activate env
 # to exit
 pyenv deactivate
+```
+
+```bash
+pip install -r requirements.txt
 ```
