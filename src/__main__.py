@@ -21,10 +21,14 @@ class Speed:
 
 @component
 class Player:
-    pass
+    def __init__(self, image_path: str):
+        temp = pygame.image.load(image_path)
+        self.image = pygame.transform.scale(temp, (32, 64))
+
+    image: pygame.Surface
 
     def hitbox(self, position: Position) -> pygame.Rect:
-        return pygame.Rect(position.x, position.y, 10, 10)
+        return pygame.Rect(position.x, position.y, self.image.get_width(), self.image.get_height())
 
 class PlayerController(esper.Processor):
     def process(self, event: pygame.event.Event):
@@ -72,7 +76,8 @@ class DrawPlayerSystem(esper.Processor):
         self.screen = screen
     def process(self):
         for _, (position, player) in esper.get_components(Position, Player):
-            pygame.draw.rect(self.screen, (255, 0, 0), player.hitbox(position))
+            # pygame.draw.rect(self.screen, (255, 0, 0), player.hitbox(position))
+            self.screen.blit(player.image, player.hitbox(position))
 
 
 pygame.init()
@@ -82,14 +87,13 @@ def main() -> None:
     #  ----  Set up display ----
     screen_size: Tuple[int, int] = WINDOW_DIMENSIONSE
     screen: pygame.Surface = pygame.display.set_mode(screen_size)
-    pygame.display.set_caption('Hello, World!')
     #  ----  End set up display ----
 
     player = esper.create_entity()
-    esper.add_component(player, Player())
+    esper.add_component(player, Player('./assets/player.jpg'))
     esper.add_component(player, Position(x=100, y=100))
     esper.add_component(player, Velocity(x=0, y=0))
-    esper.add_component(player, Speed(value=0.1))
+    esper.add_component(player, Speed(value=0.001))
 
     player_controller = PlayerController()
     esper.add_processor(player_controller)
